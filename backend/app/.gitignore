@@ -1,0 +1,4 @@
+node_modules/
+model/config.php
+.DS_Store
+*.DS_Store
