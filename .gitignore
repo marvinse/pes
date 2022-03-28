@@ -1,5 +1,7 @@
 node_modules/
 backend/app/model/config.php
+/backend/app/model/config.php
 */model/config.php
+**/model/config.php
 .DS_Store
 *.DS_Store
