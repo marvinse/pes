@@ -10,10 +10,10 @@
             <a class="nav-link" href="?c=dashboard">Inicio <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Añadir cliente</a>
+            <a class="nav-link" href="?c=dashboard&action=add">Añadir cliente</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Busqueda avanzada</a>
+            <a class="nav-link" href="?c=dashboard&action=advancedsearch">Busqueda avanzada</a>
         </li>
         <?php if( @$_SESSION["isAdmin"]==1 ){ ?>
             <li class="nav-item">

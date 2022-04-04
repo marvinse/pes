@@ -40,22 +40,67 @@ include_once "model/Connection.php";
         $this->status = $status;
         $this->responsible_id = $responsible_id;
     }
-    
-    /*public function login(){
-      $query = "SELECT * FROM users where user = '$this->username' && password = '$this->password' ";
+
+    static function add ($type, $entity, $contactname, $phone, $email, $direction,
+      $date, $activity_date, $topic, $price, $notes, $modified_date, $status, $responsible){
+        $pdo  = new Connection();
+        $pdo = $pdo->open();
+        $query = "INSERT INTO clients (type, entity_name, name, phone, email, direction, date, activity_date,
+        topic, price, notes, modified_date, status, responsible_id)"
+              . " VALUES ('$type', '$entity', '$contactname', '$phone', '$email', '$direction',
+              '$date', '$activity_date', '$topic', '$price', '$notes', '$modified_date', '$status', '$responsible')";
+        $result = $pdo->prepare($query);
+        return $result->execute();
+    }
+
+    static function update($id, $type, $entity, $contactname, $phone, $email, $direction,
+    $date, $activity_date, $topic, $price, $notes, $modified_date, $status, $responsible){
+      $query = "UPDATE clients set type='$type', entity_name='$entity', name='$contactname',
+        phone='$phone', email='$email', direction='$direction', date='$date', activity_date='$activity_date',
+        topic='$topic', price='$price', notes='$notes', modified_date='$modified_date', status='$status',
+        responsible_id='$responsible'
+       WHERE id='$id'"; 
+      $pdo = new Connection();
+      $results = $pdo->open()->prepare($query);
+      return $results->execute();
+    }
+
+    static function search($searchTerm){
+      $query = "SELECT * FROM clients where entity_name like '%$searchTerm%' or
+      name like '%$searchTerm%' or email like '%$searchTerm%'";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $results = $pdo->query($query);
       $rows = [];
       foreach($results->fetchAll() as $row){
-        $rows[] = new User($row['user'], null, $row['id'], $row['isAdmin']);
+        $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
+        $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
+        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id']);
       }
       return $rows;
-    }*/
+    }
 
-    static function search($searchTerm){
-      $query = "SELECT * FROM clients where entity_name like '%$searchTerm%' or
-      name like '%$searchTerm%' or email like '%$searchTerm%'";
+    static function advancedsearch($queryTerm){
+      if($queryTerm!=""){
+        $query = "SELECT * FROM clients where ".$queryTerm;
+        $pdo  = new Connection();
+        $pdo = $pdo->open();
+        $results = $pdo->query($query);
+        $rows = [];
+        foreach($results->fetchAll() as $row){
+          $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
+          $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
+          $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id']);
+        }
+      }else{
+        $rows = [];
+      }
+      
+      return $rows;
+    }
+
+    static function select($id){
+      $query = "SELECT * FROM clients where id = '$id'";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $results = $pdo->query($query);
@@ -80,6 +125,13 @@ include_once "model/Connection.php";
         $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id']);
       }
       return $rows;
+    }
+
+    static function delete($id){
+      $query = "DELETE FROM clients WHERE id = '$id'";
+      $pdo = new Connection();
+      $results = $pdo->open()->prepare($query);
+      return $results->execute();
     }
 
   }
