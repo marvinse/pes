@@ -18,9 +18,10 @@ include_once "model/Connection.php";
     public $modified_date;
     public $status;
     public $responsible_id;
+    public $responsible_name;
     
     public function __construct($id = 0, $type, $entity_name, $name, $phone, $email, $direction, $date, $activity_date,
-        $topic, $price, $notes, $modified_date, $status, $responsible_id) {
+        $topic, $price, $notes, $modified_date, $status, $responsible_id, $responsible_name) {
 
         if( $id ){
             $this->id = $id;
@@ -39,6 +40,7 @@ include_once "model/Connection.php";
         $this->modified_date = $modified_date;
         $this->status = $status;
         $this->responsible_id = $responsible_id;
+        $this->responsible_name = $responsible_name;
     }
 
     static function add ($type, $entity, $contactname, $phone, $email, $direction,
@@ -66,8 +68,8 @@ include_once "model/Connection.php";
     }
 
     static function search($searchTerm){
-      $query = "SELECT * FROM clients where entity_name like '%$searchTerm%' or
-      name like '%$searchTerm%' or email like '%$searchTerm%'";
+      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id) where c.entity_name like '%$searchTerm%' or
+      c.name like '%$searchTerm%' or c.email like '%$searchTerm%'";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $results = $pdo->query($query);
@@ -75,14 +77,14 @@ include_once "model/Connection.php";
       foreach($results->fetchAll() as $row){
         $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
         $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id']);
+        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
       }
       return $rows;
     }
 
     static function advancedsearch($queryTerm){
       if($queryTerm!=""){
-        $query = "SELECT * FROM clients where ".$queryTerm;
+        $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id) where ".$queryTerm;
         $pdo  = new Connection();
         $pdo = $pdo->open();
         $results = $pdo->query($query);
@@ -90,17 +92,16 @@ include_once "model/Connection.php";
         foreach($results->fetchAll() as $row){
           $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
           $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-          $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id']);
+          $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
         }
       }else{
         $rows = [];
       }
-      
       return $rows;
     }
 
     static function select($id){
-      $query = "SELECT * FROM clients where id = '$id'";
+      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id) where c.id = '$id'";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $results = $pdo->query($query);
@@ -108,13 +109,13 @@ include_once "model/Connection.php";
       foreach($results->fetchAll() as $row){
         $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
         $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id']);
+        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
       }
       return $rows;
     }
 
     static function selectAll(){
-      $query = "SELECT * FROM clients";
+      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id)";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $results = $pdo->query($query);
@@ -122,7 +123,7 @@ include_once "model/Connection.php";
       foreach($results->fetchAll() as $row){
         $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
         $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id']);
+        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
       }
       return $rows;
     }

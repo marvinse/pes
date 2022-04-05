@@ -12,31 +12,31 @@
                     $query="";
                     
                     if( $_POST['type'] ){
-                        $query .= "type = '".$_POST['type']."'";
+                        $query .= "c.type = '".$_POST['type']."'";
                     }
                     if( $_POST['entity'] ){
-                        $query .= ($query == "" ? "" : " and ")."entity_name like '%".$_POST['entity']."%'";
+                        $query .= ($query == "" ? "" : " and ")."c.entity_name like '%".$_POST['entity']."%'";
                     }
                     if( $_POST['contactname'] ){
-                        $query .= ($query == "" ? "" : " and ")."name like '%".$_POST['contactname']."%'";
+                        $query .= ($query == "" ? "" : " and ")."c.name like '%".$_POST['contactname']."%'";
                     }
                     if( $_POST['email'] ){
-                        $query .= ($query == "" ? "" : " and ")."email like '%".$_POST['email']."%'";
+                        $query .= ($query == "" ? "" : " and ")."c.email like '%".$_POST['email']."%'";
                     }
                     if( $_POST['date'] ){
-                        $query .= ($query == "" ? "" : " and ")."date = '".$_POST['date']."'";
+                        $query .= ($query == "" ? "" : " and ")."c.date = '".$_POST['date']."'";
                     }
                     if( $_POST['activity_date'] ){
-                        $query .= ($query == "" ? "" : " and ")."activitydate = '".$_POST['activitydate']."'";
+                        $query .= ($query == "" ? "" : " and ")."c.activitydate = '".$_POST['activitydate']."'";
                     }
                     if( $_POST['topic'] ){
-                        $query .= ($query == "" ? "" : " and ")."topic like '%".$_POST['topic']."%'";
+                        $query .= ($query == "" ? "" : " and ")."c.topic like '%".$_POST['topic']."%'";
                     }
                     if( $_POST['status'] ){
-                        $query .= ($query == "" ? "" : " and ")."status = '".$_POST['status']."'";
+                        $query .= ($query == "" ? "" : " and ")."c.status = '".$_POST['status']."'";
                     }
                     if( $_POST['responsible'] ){
-                        $query .= ($query == "" ? "" : "and")."responsible_id = '".$_POST['responsible']."'";
+                        $query .= ($query == "" ? "" : "and")."c.responsible_id = '".$_POST['responsible']."'";
                     }
                     $clients = Client::advancedsearch( $query );
                     include 'view/dashboard.php';

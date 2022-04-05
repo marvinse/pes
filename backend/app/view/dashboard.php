@@ -23,7 +23,7 @@
           <th scope="col">Monto</th>
           <th scope="col">Notas</th>
           <th scope="col">Modificado</th>
-          <th scope="col">Responsables</th>
+          <th scope="col">Responsable</th>
           <th scope="col">Opciones</th>
         </tr>
       </thead>
@@ -42,7 +42,7 @@
                 <td data-label="Monto"><?php echo $client->price ?></td>
                 <td data-label="Notas"><?php echo $client->notes ?></td>
                 <td data-label="Modificado"><?php echo $client->modified_date ?></td>
-                <td data-label="Responsable"><?php echo $client->responsible_id ?></td>
+                <td data-label="Responsable"><?php echo $client->responsible_name ?></td>
                 <td data-label="Opciones">
                   <a href="?c=dashboard&action=edit&id=<?php echo $client->id ?>">Editar</a>
                   <br />
