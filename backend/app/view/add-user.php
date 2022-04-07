@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="password">Contraseña temporal (el usuario deberá cambiarla en el primer inicio de sesión)</label>
+            <label for="password">Contraseña temporal (el usuario podrá cambiarla luego)</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña temporal" required>
             <div class="invalid-feedback">
                 Favor ingresar una contraseña temporal

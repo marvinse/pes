@@ -65,6 +65,13 @@ include_once "model/Connection.php";
       return $result->execute();
     }
 
+    static function changepassword($newpassword, $userid){
+      $query = "UPDATE users set password='$newpassword' WHERE id='$userid'"; 
+      $pdo = new Connection();
+      $results = $pdo->open()->prepare($query);
+      return $results->execute();
+    }
+
     static function update($id, $username, $email, $isAdmin){
       $query = "UPDATE users set user='$username', email='$email', isAdmin='$isAdmin' WHERE id='$id'"; 
       $pdo = new Connection();

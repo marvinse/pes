@@ -19,8 +19,12 @@
                 <td data-label="Usuario"><?php echo $user->username ?></td>
                 <td data-label="Email"><?php echo $user->email ?></td>
                 <td data-label="Acciones">
-                    <a href="?c=user&action=edit&id=<?php echo $user->getId() ?>">Editar</a> 
-                    <a href="#" onclick="openModal(<?php echo $user->getId() ?>)">Borrar</a>
+                    <a href="?c=user&action=edit&id=<?php echo $user->getId() ?>">Editar</a>
+                    <?php if($user->getId() == $_SESSION["uid"]){ ?>
+                        <a href="#" onclick="alert('No se puede eliminar usted mismo')">Borrar</a>
+                    <?php }else{ ?>
+                      <a href="#" onclick="openModal(<?php echo $user->getId() ?>)">Borrar</a>
+                    <?php } ?>
                 </td>
             </tr>
             <?php } ?>

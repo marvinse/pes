@@ -4,6 +4,13 @@
         $users = User::selectAll();
 
         switch (@$_GET['action']) {
+            case 'profile':
+                if($_POST){ //new password
+                    User::changepassword( md5($_POST['newpassword']), $_SESSION["uid"] );
+                    $success = true;
+                }
+                include 'view/profile.php';
+                break;
             case 'add':
                 if($_POST){ //new user is being added
                     User::add( $_POST['username'], $_POST['email'], md5($_POST['password']), $_POST['isAdmin'] );

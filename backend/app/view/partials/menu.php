@@ -21,6 +21,9 @@
             </li>
         <?php } ?>
         <li class="nav-item">
+            <a class="nav-link" href="?c=user&action=profile">Mi perfil</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="?c=login&action=logout">Cerrar sesión</a>
         </li>
         </ul>
