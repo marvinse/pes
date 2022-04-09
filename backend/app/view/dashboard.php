@@ -51,15 +51,21 @@
         <?php } ?>
       </tbody>
     </table>
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-      </ul>
+    <br>
+    <nav aria-label="navigation">
+      <?php 
+        if($totalClients > $resulsPerPage){ ?>
+          <ul class="pagination">
+            <?php
+              $totalPages = ceil($totalClients / $resulsPerPage);
+              for ($i = 1; $i <= $totalPages; $i++) { ?>
+                <li class="page-item <?php echo $i == $currentPage ? "active" : "" ?> "><a class="page-link" href="?c=dashboard&page=<?php echo $i;?>"><?php echo $i; ?></a></li>
+              <?php }
+            ?>
+        </ul>  
+      <?php  } ?>
     </nav>
+    </br>
   </div>
    <!-- Modal -->
   <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-hidden="true">

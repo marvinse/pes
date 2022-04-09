@@ -1,7 +1,9 @@
 <?php
     if(@$_SESSION["username"]){
         include "model/Client.php";
-
+        $resulsPerPage = 100;
+        $currentPage = @$_GET['page'] ? $_GET['page'] : 1;
+        
         switch (@$_GET['action']) {
             case 'search':
                 $clients = Client::search( $_POST['search'] );
@@ -75,7 +77,8 @@
                 }
                 break;
             default:
-                $clients = Client::selectAll();
+                $totalClients = Client::getTotalClients();
+                $clients = Client::selectAll($resulsPerPage, $currentPage);
                 include 'view/dashboard.php';
         }
     }else{

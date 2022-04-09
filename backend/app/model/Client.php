@@ -114,10 +114,28 @@ include_once "model/Connection.php";
       return $rows;
     }
 
-    static function selectAll(){
-      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id)";
+    static function getTotalClients(){
+      $queryTotal = "SELECT COUNT(id) AS totalClients FROM clients"; //get total of clients
       $pdo  = new Connection();
       $pdo = $pdo->open();
+      $totalClients = 0;
+      foreach($pdo->query($queryTotal)->fetchAll() as $queryResult){
+        $totalClients = $queryResult["totalClients"];
+      }
+      return $totalClients;
+    }
+
+    static function selectAll($resultsPerPage, $pageNumber = 1){
+      $totalClients = Client::getTotalClients();
+      
+      $pdo  = new Connection();
+      $pdo = $pdo->open();
+
+      $offsetValue = ($pageNumber-1) * $resultsPerPage;
+
+      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id)
+      LIMIT ".$resultsPerPage." OFFSET ".$offsetValue;
+
       $results = $pdo->query($query);
       $rows = [];
       foreach($results->fetchAll() as $row){
