@@ -1,7 +1,7 @@
 <?php include('view/partials/menu.php') ?>
 <br><br>
 <div class="container">
-    <form class="needs-validation" novalidate method="POST" action="?c=dashboard&action=update">
+    <form enctype="multipart/form-data" class="needs-validation" novalidate method="POST" action="?c=dashboard&action=update">
         <div class="form-group">
             <label for="type">Tipo de grupo</label>
             <select class="form-control" id="type" name="type">
@@ -82,7 +82,14 @@
         </div>
         <div class="form-group">
             <label for="pdf">Propuesta PDF enviada</label>
-            <input type="file" class="form-control-file" id="pdf" name="pdf">
+            <?php if($client[0]->pdf){ ?>
+                    <br/><a id="editPDFlink" href="/app/<?php echo $client[0]->pdf; ?>" target="_blank"><button type="button" class="btn btn-dark">Ver PDF</button></a>
+                    <input type="file" accept=".pdf" class="form-control-file" id="pdf" name="pdf" style="display:none" />
+                    <span id="editPDF" style="font-size:13px;text-decoration:underline;cursor:pointer" onClick="javascript:showFile()">Editar</span><br />
+                    <span id="cancelPDF" style="font-size:13px;text-decoration:underline;cursor:pointer; display:none" onClick="javascript:hideFile()">Cancelar</span>
+                    <?php }else{ ?>
+                <input type="file" accept=".pdf" class="form-control-file" id="pdf" name="pdf">
+            <?php } ?>
             </div>
         <div class="form-group">
             <label for="notes">Observaciones</label>
@@ -92,3 +99,19 @@
         <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
 </div>
+<script>
+    function showFile(){
+        document.getElementById("editPDF").style.display="none";
+        document.getElementById("editPDFlink").style.display="none";
+        document.getElementById("pdf").style.display="inline";
+        document.getElementById("cancelPDF").style.display="inline";
+    }
+
+    function hideFile(){
+        document.getElementById("editPDF").style.display="inline";
+        document.getElementById("editPDFlink").style.display="inline";
+        document.getElementById("pdf").style.display="none";
+        document.getElementById("cancelPDF").style.display="none";
+        $("#pdf").val(""); //clean input file
+    }
+</script>

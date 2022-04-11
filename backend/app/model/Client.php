@@ -19,13 +19,18 @@ include_once "model/Connection.php";
     public $status;
     public $responsible_id;
     public $responsible_name;
+    public $pdf;
     
     public function __construct($id = 0, $type, $entity_name, $name, $phone, $email, $direction, $date, $activity_date,
-        $topic, $price, $notes, $modified_date, $status, $responsible_id, $responsible_name) {
+        $topic, $price, $notes, $modified_date, $status, $responsible_id, $responsible_name, $pdf = NULL) {
 
         if( $id ){
             $this->id = $id;
         }
+        if( $pdf ){
+          $this->pdf = $pdf;
+        }
+
         $this->type = $type;
         $this->entity_name = $entity_name;
         $this->name = $name;
@@ -43,16 +48,51 @@ include_once "model/Connection.php";
         $this->responsible_name = $responsible_name;
     }
 
+    static function addPDF($PDFFile){
+      if($PDFFile["pdf"]["type"] == "application/pdf"){
+        foreach ($PDFFile as $tempFile){
+          $tempFile["name"] = strtolower(str_replace(" ","_",trim($PDFFile['pdf']['name']))); //all in lowercase and replace white spaces for an _
+          $tempFile["name"] = strtr($tempFile["name"], "àáâãäåèéêëìíîïòóôõöùúûüñÀÈÌÒÙÑ", "aaaaaaeeeeiiiiooooouuuunAEIOUN");  //quita tildes y ñ
+          
+          $path = "pdf/".$tempFile["name"];
+          $i = 1;
+          $extension = "pdf";
+          $name = explode(".", $tempFile["name"]);
+          $name = $name[0];
+
+          while(file_exists($path)){//if the file already exist, we change the name
+            $replace = $name.$i;
+            $name = $name.$i;
+            $replace = "pdf/".$replace.".".$extension;
+            $path = $replace;
+            $i=$i+1;
+          }
+
+          if (filesize($tempFile["tmp_name"])){
+            move_uploaded_file($tempFile["tmp_name"], $path);
+            chmod($path, 0666);
+          }
+          $pdfData = array("name"=>$name,"path"=>$path);
+			    return $pdfData;
+        }
+      }
+    }
+
     static function add ($type, $entity, $contactname, $phone, $email, $direction,
       $date, $activity_date, $topic, $price, $notes, $modified_date, $status, $responsible){
         $pdo  = new Connection();
         $pdo = $pdo->open();
+        
         $query = "INSERT INTO clients (type, entity_name, name, phone, email, direction, date, activity_date,
         topic, price, notes, modified_date, status, responsible_id)"
               . " VALUES ('$type', '$entity', '$contactname', '$phone', '$email', '$direction',
               '$date', '$activity_date', '$topic', '$price', '$notes', '$modified_date', '$status', '$responsible')";
         $result = $pdo->prepare($query);
-        return $result->execute();
+        $result->execute();
+
+        $clientId = $pdo->lastInsertId();
+
+        return $clientId;
     }
 
     static function update($id, $type, $entity, $contactname, $phone, $email, $direction,
@@ -68,7 +108,7 @@ include_once "model/Connection.php";
     }
 
     static function search($searchTerm){
-      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id) where c.entity_name like '%$searchTerm%' or
+      $query = "SELECT c.*, u.user as responsible_name, p.url FROM clients c JOIN users u on (c.responsible_id = u.id) LEFT JOIN proposals p on (c.id = p.client_id) where c.entity_name like '%$searchTerm%' or
       c.name like '%$searchTerm%' or c.email like '%$searchTerm%'";
       $pdo  = new Connection();
       $pdo = $pdo->open();
@@ -77,14 +117,14 @@ include_once "model/Connection.php";
       foreach($results->fetchAll() as $row){
         $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
         $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
+        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name'], $row['url']);
       }
       return $rows;
     }
 
     static function advancedsearch($queryTerm){
       if($queryTerm!=""){
-        $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id) where ".$queryTerm;
+        $query = "SELECT c.*, u.user as responsible_name, p.url FROM clients c JOIN users u on (c.responsible_id = u.id) LEFT JOIN proposals p on (c.id = p.client_id) where ".$queryTerm;
         $pdo  = new Connection();
         $pdo = $pdo->open();
         $results = $pdo->query($query);
@@ -92,7 +132,7 @@ include_once "model/Connection.php";
         foreach($results->fetchAll() as $row){
           $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
           $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-          $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
+          $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name'], $row['url']);
         }
       }else{
         $rows = [];
@@ -101,7 +141,7 @@ include_once "model/Connection.php";
     }
 
     static function select($id){
-      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id) where c.id = '$id'";
+      $query = "SELECT c.*, u.user as responsible_name, p.url FROM clients c JOIN users u on (c.responsible_id = u.id) LEFT JOIN proposals p on (c.id = p.client_id) where c.id = '$id'";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $results = $pdo->query($query);
@@ -109,7 +149,7 @@ include_once "model/Connection.php";
       foreach($results->fetchAll() as $row){
         $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
         $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
+        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name'], $row['url']);
       }
       return $rows;
     }
@@ -133,7 +173,7 @@ include_once "model/Connection.php";
 
       $offsetValue = ($pageNumber-1) * $resultsPerPage;
 
-      $query = "SELECT c.*, u.user as responsible_name FROM clients c JOIN users u on (c.responsible_id = u.id)
+      $query = "SELECT c.*, u.user as responsible_name, p.url FROM clients c JOIN users u on (c.responsible_id = u.id) LEFT JOIN proposals p on (c.id = p.client_id)
       LIMIT ".$resultsPerPage." OFFSET ".$offsetValue;
 
       $results = $pdo->query($query);
@@ -141,7 +181,7 @@ include_once "model/Connection.php";
       foreach($results->fetchAll() as $row){
         $rows[] = new Client($row['id'],$row['type'], $row['entity_name'], $row['name'], $row['phone'],
         $row['email'], $row['direction'], $row['date'], $row['activity_date'], $row['topic'], $row['price'],
-        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name']);
+        $row['notes'], $row['modified_date'], $row['status'], $row['responsible_id'], $row['responsible_name'], $row['url']);
       }
       return $rows;
     }

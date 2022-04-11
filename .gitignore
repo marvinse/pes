@@ -1,5 +1,6 @@
 node_modules/
 backend/app/model/config.php
+backend/app/pdf/*
 /backend/app/model/config.php
 */model/config.php
 **/model/config.php

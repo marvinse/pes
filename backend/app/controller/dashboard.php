@@ -3,7 +3,7 @@
         include "model/Client.php";
         $resulsPerPage = 100;
         $currentPage = @$_GET['page'] ? $_GET['page'] : 1;
-        
+
         switch (@$_GET['action']) {
             case 'search':
                 $clients = Client::search( $_POST['search'] );
@@ -55,25 +55,49 @@
                 include 'view/edit-client.php';
                 break;
             case 'update':
+                $pdfData;
+                if($_FILES["pdf"]["size"] > 0){//pdf is being updated
+                    
+                    $pdfData = Client::addPDF($_FILES);
+                }
                 Client::update( $_POST['id'], $_POST['type'], $_POST['entity'], $_POST['contactname'], $_POST['telephone'],
                 $_POST['email'], $_POST['direction'], $_POST['date'], $_POST['activitydate'], $_POST['topic'],
                 $_POST['money'], $_POST['notes'], date("Y-m-d"), $_POST['status'], $_POST['responsible'] );
+                
+                if( $pdfData['path'] ){
+                    include "model/Pdf.php";
+                    Pdf::update($pdfData['name'], $pdfData['path'], $_POST['id']);
+                }
+
                 header('Location: /app?c=dashboard');
                 break;
             case 'delete':
+                include "model/Pdf.php";
                 Client::delete( $_GET['id'] );
+                Pdf::delete( $_GET['id'] );
                 header('Location: /app?c=dashboard');
                 break;
             case 'add':
                 if($_POST){ //new client is being added
-                    Client::add( $_POST['type'], $_POST['entity'], $_POST['contactname'], $_POST['telephone'],
+                    $pdfData;
+                    if($_FILES["pdf"]["size"] > 0){//pdf is being added
+                        $pdfData = Client::addPDF($_FILES);
+                    }
+
+                    $lastClientId = Client::add( $_POST['type'], $_POST['entity'], $_POST['contactname'], $_POST['telephone'],
                     $_POST['email'], $_POST['direction'], $_POST['date'], $_POST['activitydate'], $_POST['topic'],
                     $_POST['money'], $_POST['notes'], date("Y-m-d"), $_POST['status'], $_POST['responsible']);
+                    
+                    if( $pdfData['path'] ){
+                        include "model/Pdf.php";
+                        Pdf::add($pdfData['name'], $pdfData['path'], $lastClientId);
+                    }
+
                     header('Location: /app?c=dashboard');
                 }else{
                     include "model/User.php";
                     $users = User::selectAll();
-                    include 'view/add-client.php';  
+                    include 'view/add-client.php';
                 }
                 break;
             default:

@@ -43,10 +43,15 @@
                 <td data-label="Notas"><?php echo $client->notes ?></td>
                 <td data-label="Modificado"><?php echo $client->modified_date ?></td>
                 <td data-label="Responsable"><?php echo $client->responsible_name ?></td>
-                <td data-label="Opciones">
+                <td data-label="Opciones" class="options">
                   <a href="?c=dashboard&action=edit&id=<?php echo $client->id ?>">Editar</a>
                   <br />
-                  <a href="#" onclick="openModal(<?php echo $client->id ?>)">Eliminar</a></td>
+                  <a href="#" onclick="openModal(<?php echo $client->id ?>)">Eliminar</a>
+                  <br />
+                  <?php if($client->pdf){ ?>
+                    <a href="/app/<?php echo $client->pdf; ?>" target="_blank"><button type="button" class="btn btn-dark">Ver PDF</button></a>
+                  <?php } ?>
+                </td>
             </tr>
         <?php } ?>
       </tbody>

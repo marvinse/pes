@@ -1,7 +1,7 @@
 <?php include('view/partials/menu.php') ?>
 <br><br>
 <div class="container">
-    <form class="needs-validation" novalidate method="POST" action="?c=dashboard&action=add">
+    <form enctype="multipart/form-data" class="needs-validation" novalidate method="POST" action="?c=dashboard&action=add">
         <div class="form-group">
             <label for="type">Tipo de grupo</label>
             <select class="form-control" id="type" name="type">
@@ -82,7 +82,7 @@
         </div>
         <div class="form-group">
             <label for="pdf">Propuesta PDF enviada</label>
-            <input type="file" class="form-control-file" id="pdf" name="pdf">
+            <input type="file" accept=".pdf" class="form-control-file" id="pdf" name="pdf">
             </div>
         <div class="form-group">
             <label for="notes">Observaciones</label>

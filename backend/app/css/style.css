@@ -274,3 +274,7 @@ button:hover {
 .dot.unknow::before, tr.unknow{
   background-color: #9A8AC4;
 }
+.options a{
+  color: black;
+  text-decoration: underline;
+}
