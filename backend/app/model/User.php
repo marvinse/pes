@@ -21,7 +21,7 @@ include_once "model/Connection.php";
     }
     
     public function login(){
-      $query = "SELECT * FROM users where user = '$this->username' && password = '$this->password' ";
+      $query = "SELECT * FROM users where user = '".addslashes($this->username)."' && password = '".addslashes($this->password)."' ";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $results = $pdo->query($query);
@@ -60,20 +60,20 @@ include_once "model/Connection.php";
       $pdo  = new Connection();
       $pdo = $pdo->open();
       $query = "INSERT INTO users (user, email, password, isAdmin)"
-             . " VALUES ('$user', '$email', '$password', '$isAdmin')";
+             . " VALUES ('".addslashes($user)."', '".addslashes($email)."', '".addslashes($password)."', '$isAdmin')";
       $result = $pdo->prepare($query);
       return $result->execute();
     }
 
     static function changepassword($newpassword, $userid){
-      $query = "UPDATE users set password='$newpassword' WHERE id='$userid'"; 
+      $query = "UPDATE users set password='".addslashes($newpassword)."' WHERE id='$userid'"; 
       $pdo = new Connection();
       $results = $pdo->open()->prepare($query);
       return $results->execute();
     }
 
     static function update($id, $username, $email, $isAdmin){
-      $query = "UPDATE users set user='$username', email='$email', isAdmin='$isAdmin' WHERE id='$id'"; 
+      $query = "UPDATE users set user='".addslashes($username)."', email='".addslashes($email)."', isAdmin='$isAdmin' WHERE id='$id'"; 
       $pdo = new Connection();
       $results = $pdo->open()->prepare($query);
       return $results->execute();

@@ -85,8 +85,8 @@ include_once "model/Connection.php";
         
         $query = "INSERT INTO clients (type, entity_name, name, phone, email, direction, date, activity_date,
         topic, price, notes, modified_date, status, responsible_id)"
-              . " VALUES ('$type', '$entity', '$contactname', '$phone', '$email', '$direction',
-              '$date', '$activity_date', '$topic', '$price', '$notes', '$modified_date', '$status', '$responsible')";
+              . " VALUES ('$type', '".addslashes($entity)."', '".addslashes($contactname)."', '".addslashes($phone)."', '".addslashes($email)."', '".addslashes($direction)."',
+              '$date', '$activity_date', '".addslashes($topic)."', '".addslashes($price)."', '".addslashes($notes)."', '$modified_date', '$status', '$responsible')";
         $result = $pdo->prepare($query);
         $result->execute();
 
@@ -97,11 +97,12 @@ include_once "model/Connection.php";
 
     static function update($id, $type, $entity, $contactname, $phone, $email, $direction,
     $date, $activity_date, $topic, $price, $notes, $modified_date, $status, $responsible){
-      $query = "UPDATE clients set type='$type', entity_name='$entity', name='$contactname',
-        phone='$phone', email='$email', direction='$direction', date='$date', activity_date='$activity_date',
-        topic='$topic', price='$price', notes='$notes', modified_date='$modified_date', status='$status',
+      $query = "UPDATE clients set type='$type', entity_name='".addslashes($entity)."', name='".addslashes($contactname)."',
+        phone='".addslashes($phone)."', email='".addslashes($email)."', direction='".addslashes($direction)."', date='$date', activity_date='$activity_date',
+        topic='".addslashes($topic)."', price='".addslashes($price)."', notes='".addslashes($notes)."', modified_date='$modified_date', status='$status',
         responsible_id='$responsible'
        WHERE id='$id'"; 
+       echo $query;
       $pdo = new Connection();
       $results = $pdo->open()->prepare($query);
       return $results->execute();
