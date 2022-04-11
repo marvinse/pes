@@ -63,7 +63,6 @@
                 Client::update( $_POST['id'], $_POST['type'], $_POST['entity'], $_POST['contactname'], $_POST['telephone'],
                 $_POST['email'], $_POST['direction'], $_POST['date'], $_POST['activitydate'], $_POST['topic'],
                 $_POST['money'], $_POST['notes'], date("Y-m-d"), $_POST['status'], $_POST['responsible'] );
-                
                 if( $pdfData['path'] ){
                     include "model/Pdf.php";
                     Pdf::update($pdfData['name'], $pdfData['path'], $_POST['id']);

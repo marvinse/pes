@@ -51,6 +51,20 @@ session_start();
                 });
             }, false);
             })();
+
+            $('.viewMore').click( function(){
+                $(this).hide();
+                $(this).parent().find('.moreText').show();
+            })
+
+            $( ".notes .initialText" ).each(function( index ) {
+                var text = $(this).text();
+                if( text.length > 85 ){
+                    $(this).parent().find('.viewMore').show();
+                    $(this).parent().find('.moreText').text(text.slice(85));
+                    $(this).parent().find('.initialText').text(text.slice(0,85));
+                }
+            });
         </script>
     </body>
 </html>

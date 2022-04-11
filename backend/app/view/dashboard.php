@@ -40,7 +40,7 @@
                 <td data-label="Fecha Ejecucion"><?php echo $client->activity_date ?></td>
                 <td data-label="Tema"><?php echo $client->topic ?></td>
                 <td data-label="Monto"><?php echo $client->price ?></td>
-                <td data-label="Notas"><?php echo $client->notes ?></td>
+                <td data-label="Notas" class="notes"><span class="initialText"><?php echo $client->notes ?></span><span class="viewMore"> ... ver más</span><span class="moreText"></span></td>
                 <td data-label="Modificado"><?php echo $client->modified_date ?></td>
                 <td data-label="Responsable"><?php echo $client->responsible_name ?></td>
                 <td data-label="Opciones" class="options">
@@ -103,4 +103,5 @@
       function deleteClient(){
           window.location.href = "?c=dashboard&action=delete&id="+$('#clientid').val();
       }
+
   </script>

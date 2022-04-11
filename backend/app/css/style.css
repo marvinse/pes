@@ -278,3 +278,11 @@ button:hover {
   color: black;
   text-decoration: underline;
 }
+.moreText{
+  display: none;
+}
+.viewMore{
+  cursor: pointer;
+  font-weight: bold;
+  display: none;
+}
